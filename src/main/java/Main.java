@@ -2,10 +2,10 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            var ntru = NTRU.create(107, 107 / 3, 3, 64);
-            var ciphertext = ntru.encode("hello");
+            var ntru = NTRU.create(107, 14, 12, 5, 3, 64);
+            var ciphertext = ntru.encrypt("hello there");
             System.out.println(ciphertext);
-            var plaintext = ntru.decode(ciphertext);
+            var plaintext = ntru.decrypt(ciphertext);
             System.out.println(plaintext);
         } catch (Exception e) {
             e.printStackTrace();

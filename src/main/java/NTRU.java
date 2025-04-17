@@ -17,54 +17,54 @@ public class NTRU {
         this.N = g.coefficients.length;
         this.d = d;
         var F = new PolynomialInverter(f);
-        System.out.println("created polynomial inverter");
-        Fp = F.findInverse(this.p);
-        System.out.println("found inverse mod p" + Fp);
-        Fq = F.findInverse(this.q);
-        System.out.println("found inverse mod q " + Fq);
+        Fp = F.findInverse(p);
+        Fq = F.findInverse(q);
         this.h = Fq.times(g, this.q);
-        System.out.println("found pubkey " + h);
     }
 
-    public static NTRU create(int N, int d, int p, int q) throws Exception {
-//        for (int i = 0; i < 100; i++) {
+    public static NTRU create(int N, int df, int dg, int dr, int p, int q) throws Exception {
+        for (int i = 0; i < 100; i++) {
             try {
-                return new NTRU(Polynomial.tau(N, d + 1, d), Polynomial.tau(N, d, d), d, p, q);
+                return new NTRU(Polynomial.tau(N, df + 1, df), Polynomial.tau(N, dg, dg), dr, p, q);
             } catch (Integers.NoInverseExists ignored) {}
-//        }
+        }
         throw new Exception("couldn't find a good choice for f and g");
     }
 
-    public Polynomial encode(String message) throws Exception {
+    public Polynomial encrypt(String message) throws Exception {
+        Polynomial encoded = bytesToPolynomial(message.getBytes(StandardCharsets.UTF_8), p.modulus);
         var phi = Polynomial.tau(N, d, d);
-        return phi.scale(p.modulus, q).times(h, q).plus(stringToPolynomial(message), q);
+        return phi.scale(p.modulus, q).times(h, q).plus(encoded, q);
     }
 
-    public String decode(Polynomial encoded) {
-        return polynomialToString(f.times(encoded, q).lift(q).times(Fp, p).lift(p));
+    public String decrypt(Polynomial encrypted) {
+        Polynomial encoded = f.times(encrypted, q).lift(q).times(Fp, p).lift(p);
+        encoded = encoded.mod(p);
+        return new String(polynomialToBytes(encoded, p.modulus), StandardCharsets.UTF_8);
     }
 
-    private Polynomial stringToPolynomial(String message) throws Exception {
-        byte[] utf8 = message.getBytes(StandardCharsets.UTF_8);
-        int[] utf8Ints = new int[utf8.length];
-        for (int i = 0; i < utf8Ints.length; i++)
-            utf8Ints[i] = utf8[i] & 0xFF;
-        int[] coeffs = baseConvert(utf8Ints, 256, p.modulus);
+    private Polynomial bytesToPolynomial(byte[] bytes, int modulus) throws Exception {
+        int[] ints = new int[bytes.length];
+        for (int i = 0; i < ints.length; i++)
+            ints[i] = bytes[i] & 0xFF;
+        int[] coeffs = baseConvert(ints, 256, modulus);
         return new Polynomial(coeffs, N);
     }
 
-    private String polynomialToString(Polynomial message) {
-        int[] utf8Ints = baseConvert(message.coefficients, p.modulus, 256);
-        byte[] utf8 = new byte[utf8Ints.length];
+    private byte[] polynomialToBytes(Polynomial message, int modulus) {
+        int[] ints = baseConvert(message.coefficients, modulus, 256);
+        byte[] bytes = new byte[ints.length];
         int i;
-        for (i = 0; i < utf8.length && utf8Ints[i] != 0; i++)
-            utf8[i] = (byte) utf8Ints[i];
-        return new String(Arrays.copyOf(utf8, i), StandardCharsets.UTF_8);
+        for (i = 0; i < bytes.length && ints[i] != 0; i++)
+            bytes[i] = (byte) ints[i];
+        return Arrays.copyOf(bytes, i);
     }
 
     public static int[] baseConvert(int[] digits, int sourceBase, int destinationBase) {
         // adapted from Kevin Kwok (antimatter15@gmail.com)
         // https://gist.github.com/antimatter15/2bf0fcf5b924b4387174d5f84f35277c
+        // reverse digits to not have to deal with the trailing 0s
+        digits = reverse(digits);
         digits = Arrays.copyOf(digits, digits.length);
         int start = 0;
         List<Integer> result = new ArrayList<>();
@@ -84,7 +84,14 @@ public class NTRU {
             }
             result.add(0, carry);
             if (done)
-                return result.stream().mapToInt(Integer::intValue).toArray();
+                return reverse(result.stream().mapToInt(Integer::intValue).toArray());
         }
+    }
+
+    public static int[] reverse(int[] arr) {
+        int[] result = new int[arr.length];
+        for (int i = 0; i < arr.length; i++)
+            result[arr.length - i - 1] = arr[i];
+        return result;
     }
 }

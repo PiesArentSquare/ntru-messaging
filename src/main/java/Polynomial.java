@@ -8,11 +8,11 @@ public class Polynomial {
         coefficients = coeffs;
     }
 
-    Polynomial(int[] coeffs, int N) throws Exception{
+    Polynomial(int[] coeffs, int N) throws NTRU.MessageTooLargeException {
         if (coeffs.length == N)
             coefficients = coeffs;
         if (coeffs.length > N)
-            throw new Exception("message too long");
+            throw new NTRU.MessageTooLargeException("message too long");
         else {
             coefficients = new int[N];
             System.arraycopy(coeffs, 0, coefficients, 0, coeffs.length);

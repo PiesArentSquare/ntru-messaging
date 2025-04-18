@@ -2,6 +2,9 @@ package piesarentsquare.ntru;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
+
+import java.util.Arrays;
 
 public class EncryptionDecryptionTest {
 
@@ -16,9 +19,23 @@ public class EncryptionDecryptionTest {
                 } catch (Integers.NoInverseExists e) {
                     continue;
                 }
-                var ciphertext = ntru.encryptToPolynomial(msg);
-                var plaintext = ntru.decryptFromPolynomial(ciphertext);
-                Assertions.assertEquals(msg, plaintext);
+//                var ciphertext = ntru.encryptToBytes(msg);
+                var poly_e = ntru.encryptToPolynomial(msg);
+                var bytes_e = ntru.encodeToBytes(poly_e);
+                var base64 = ntru.encodeBase64(bytes_e);
+                var bytes_d = ntru.decodeBase64(base64);
+                var poly_d = ntru.decodeFromBytes(bytes_d);
+                var plaintext = ntru.decryptFromPolynomial(poly_d);
+                try {
+                    Assertions.assertEquals(msg, plaintext);
+                } catch (AssertionFailedError e) {
+                    System.out.println(poly_e);
+                    System.out.println(poly_d);
+                    System.out.println(Arrays.toString(bytes_e));
+                    System.out.println(Arrays.toString(bytes_d));
+                    System.out.println(base64);
+                    throw e;
+                }
             }
         } catch (NTRU.MessageTooLargeException e) {
             Assertions.fail();

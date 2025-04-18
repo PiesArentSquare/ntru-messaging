@@ -1,10 +1,7 @@
 package piesarentsquare.ntru;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 
 public class NTRU {
     Polynomial f, g, Fp, Fq, h;
@@ -36,19 +33,15 @@ public class NTRU {
     public Polynomial encryptToPolynomial(String message) throws MessageTooLargeException {
         Polynomial encoded = bytesToPolynomial(message.getBytes(StandardCharsets.UTF_8), p.modulus, true);
         var phi = Polynomial.tau(N, d, d);
-//        System.out.println(phi);
         return phi.scale(p.modulus, q).times(h, q).plus(encoded, q);
     }
 
-    public byte[] encryptToBytes(String message) throws MessageTooLargeException {
-        Polynomial encrypted = encryptToPolynomial(message);
-//        System.out.println(encrypted);
-        byte[] encoded = polynomialToBytes(encrypted, q.modulus, false);
-        return encoded;
+    public byte[] encodeToBytes(Polynomial encrypted) throws MessageTooLargeException {
+        return polynomialToBytes(encrypted, q.modulus, false);
     }
 
-    public String encrypt(String message) throws MessageTooLargeException {
-        return Base64.getEncoder().encodeToString(encryptToBytes(message));
+    public String encodeBase64(byte[] message) throws MessageTooLargeException {
+        return Base64.getEncoder().encodeToString(message);
     }
 
     public String decryptFromPolynomial(Polynomial encrypted) {
@@ -57,13 +50,12 @@ public class NTRU {
         return new String(polynomialToBytes(encoded, p.modulus, true), StandardCharsets.UTF_8);
     }
 
-    public String decryptFromBytes(byte[] encrypted) throws MessageTooLargeException {
-        Polynomial polynomial = bytesToPolynomial(encrypted, q.modulus, false);
-        return decryptFromPolynomial(polynomial);
+    public Polynomial decodeFromBytes(byte[] encrypted) throws MessageTooLargeException {
+        return bytesToPolynomial(encrypted, q.modulus, false);
     }
 
-    public String decrypt(String encrypted) throws MessageTooLargeException {
-        return decryptFromBytes(Base64.getDecoder().decode(encrypted));
+    public byte[] decodeBase64(String encrypted) throws MessageTooLargeException {
+        return Base64.getDecoder().decode(encrypted);
     }
 
     private Polynomial bytesToPolynomial(byte[] bytes, int modulus, boolean trim) throws MessageTooLargeException {
@@ -71,7 +63,7 @@ public class NTRU {
         for (int i = 0; i < ints.length; i++)
             ints[i] = bytes[i] & 0xFF;
         int[] coeffs = baseConvert(ints, 256, modulus, trim);
-        return new Polynomial(coeffs, N);
+        return new Polynomial(coeffs, N, trim);
     }
 
     private byte[] polynomialToBytes(Polynomial message, int modulus, boolean trim) {

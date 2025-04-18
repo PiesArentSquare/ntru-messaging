@@ -10,14 +10,15 @@ public class Polynomial {
         coefficients = coeffs;
     }
 
-    Polynomial(int[] coeffs, int N) throws NTRU.MessageTooLargeException {
+    Polynomial(int[] coeffs, int N, boolean smallCoeffs) throws NTRU.MessageTooLargeException {
         if (coeffs.length == N)
             coefficients = coeffs;
         if (coeffs.length > N)
             throw new NTRU.MessageTooLargeException("message too long");
         else {
+            int startPos = smallCoeffs ? 0 : N - coeffs.length;
             coefficients = new int[N];
-            System.arraycopy(coeffs, 0, coefficients, 0, coeffs.length);
+            System.arraycopy(coeffs, 0, coefficients, startPos, coeffs.length);
         }
     }
 

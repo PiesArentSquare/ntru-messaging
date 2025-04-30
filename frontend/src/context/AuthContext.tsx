@@ -1,8 +1,8 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import { encrypt } from '../util/encryption';
+import { createContext, useContext, useEffect, useState } from 'react'
+import { NTRU } from '../util/ntru.js'
 
 interface AuthContextReturn {
-    user: string | null,
+    user: string | null
     login: (u: string, p: string) => Promise<boolean>
     logout: () => Promise<void>
 }
@@ -10,13 +10,14 @@ interface AuthContextReturn {
 const AuthContext = createContext<AuthContextReturn>({
     user: null,
     login: async _ => false,
-    logout: async () => {}
+    logout: async () => {},
 })
-const authURL   = 'http://localhost:8080'
-const loginURL  = authURL + '/login'
-const logoutURL = authURL + '/logout'
-const csrfURL   = authURL + '/csrf'
-const meURL     = authURL + '/me'
+const authURL      = 'http://localhost:8080'
+const handshakeURL = authURL + '/handshake'
+const loginURL     = authURL + '/login'
+const logoutURL    = authURL + '/logout'
+const csrfURL      = authURL + '/csrf'
+const meURL        = authURL + '/me'
 
 export const AuthProvider = ({ children }: { children: any }) => {
     const [user, setUser] = useState<string | null>(null)
@@ -28,14 +29,24 @@ export const AuthProvider = ({ children }: { children: any }) => {
     }
 
     const login = async (username: string, password: string) => {
+        const crypto = new NTRU()
+        const handshakeRes = await fetch(handshakeURL, {
+            method: 'POST',
+            headers: {
+                'X-XSRF-TOKEN': await csrf(),
+            },
+            body: crypto.getPublicKey(),
+            credentials: 'include',
+        })
+        crypto.setForeignKey(await handshakeRes.text())
         const res = await fetch(loginURL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'text/plain',
                 'X-XSRF-TOKEN': await csrf(),
             },
-            body: encrypt(JSON.stringify({ username, password })),
-            credentials: 'include'
+            body: crypto.encrypt(JSON.stringify({ username, password })),
+            credentials: 'include',
         })
         if (!res.ok || !await checkAuth()) {
             setUser(null)

@@ -2,6 +2,7 @@ package piesarentsquare.backend.web.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -22,15 +23,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class NtruSecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager, EncryptionManager encryptionManager) throws Exception {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 ).authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/logout", "/me", "/csrf", "/ws/**").permitAll().anyRequest().authenticated()
+                        .requestMatchers("/login", "/logout", "/me", "/csrf", "/handshake", "/ws/**").permitAll().anyRequest().authenticated()
                 ).addFilterAt(
-                        new NtruLoginFilter(authenticationManager, "/login"),
+                        new NtruLoginFilter(authenticationManager, "/login", encryptionManager),
                         UsernamePasswordAuthenticationFilter.class
                 );
         return http.build();
@@ -45,7 +46,7 @@ public class NtruSecurityConfig {
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
-            public void addCorsMappings(CorsRegistry registry) {
+            public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:5173")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")

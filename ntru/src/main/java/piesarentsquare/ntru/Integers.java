@@ -59,18 +59,4 @@ public class Integers {
             throw new NoInverseExists(num + " has no inverse mod " + modulus);
         return inverse;
     }
-
-    static int gcd(int a, int b) {
-        if (a < b) {
-            int t = a;
-            a = b;
-            b = t;
-        }
-        do {
-            int r = mod(a, b);
-            a = b;
-            b = r;
-        } while (b != 0);
-        return a;
-    }
 }

@@ -3,7 +3,6 @@ package piesarentsquare.ntru;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.LongAdder;
 
 class PrimeInverter {
     final int[][] startingValues;
@@ -139,9 +138,9 @@ public class PolynomialInverter {
 
         for (var kv : factors.entrySet()) {
             int p = kv.getKey();
-            int pk = (int) Math.pow(p, kv.getValue().intValue());
+            int pk = (int) Math.pow(p, kv.getValue().get());
             Integers field = new Integers(p);
-            Polynomial fieldInverse = new PrimeInverter(startingValues, field).findInverse(kv.getValue().intValue());
+            Polynomial fieldInverse = new PrimeInverter(startingValues, field).findInverse(kv.getValue().get());
 
             int moduliExceptPK = modulus / pk;
             Integers fieldK = new Integers(pk);
@@ -155,26 +154,28 @@ public class PolynomialInverter {
         return new Polynomial(coeffs);
     }
 
-    static Map<Integer, LongAdder> factorize(int modulus) {
+    static class Adder {
+        private int value = 0;
+        public void increment() {
+            value++;
+        }
+        public int get() {
+            return value;
+        }
+    }
+
+    static Map<Integer, Adder> factorize(int modulus) {
         int i = 2;
         int m = modulus;
-        Map<Integer, LongAdder> frequencies = new HashMap<>();
+        Map<Integer, Adder> frequencies = new HashMap<>();
         while (i <= m && modulus != 1) {
             if (modulus % i == 0) {
                 modulus /= i;
-                frequencies.computeIfAbsent(i, k -> new LongAdder()).increment();
+                frequencies.computeIfAbsent(i, k -> new Adder()).increment();
             } else {
                 i++;
             }
         }
         return frequencies;
-    }
-
-    public static void main(String[] args) throws Integers.NoInverseExists {
-        var f = new Polynomial(new int[]{1, 0, -1, 1, 0});
-        Integers z = new Integers(9*16*25);
-        var F = new PolynomialInverter(f).findInverse(z.modulus);
-        System.out.println(F);
-        System.out.println(F.times(f, z));
     }
 }

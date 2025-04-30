@@ -1,21 +1,30 @@
 import { Client } from '@stomp/stompjs'
 import { RefObject, useEffect, useRef, useState } from 'react'
-import { decrypt, encrypt } from '../util/encryption'
+import { NTRU } from '../util/ntru'
 
 export default () => {
     const [recipient, setRecipient] = useState('')
     const [text, setText] = useState('')
     const [message, setMessage] = useState('')
     const stompClientRef: RefObject<Client | null> = useRef(null)
+    const ntruRef: RefObject<NTRU | null> = useRef(null)
 
     useEffect(() => {
+        const ntru = new NTRU()
         const wsPath = 'ws://localhost:8080/ws'
         const client = new Client({
             brokerURL: wsPath,
             onConnect: () => {
                 console.log('connected')
+                client.subscribe('/user/queue/publicKey', msg => {
+                    ntru.setForeignKey(msg.body)
+                })
+                client.publish({
+                    destination: '/app/publicKey',
+                    body: JSON.stringify({key: ntru.getPublicKey()}),
+                })
                 client.subscribe('/user/queue/messages', msg => {
-                    const message = JSON.parse(decrypt(msg.body))
+                    const message = JSON.parse(ntru!.decrypt(msg.body))
                     console.log(`${message.from}: ${message.content}`)
                     setMessage(message.content)
                 })
@@ -29,6 +38,7 @@ export default () => {
         
         client.activate()
         stompClientRef.current = client
+        ntruRef.current = ntru
 
         return () => {
             client.deactivate()
@@ -37,11 +47,13 @@ export default () => {
 
     const sendMessage = () => {
         const client = stompClientRef.current
-        if (client && client.connected) {
+        const ntru = ntruRef.current
+        console.log(ntru, client, client?.connected)
+        if (client && client.connected && ntru) {
             console.log(`sending message: ${text}`)
             client.publish({
                 destination: '/app/send',
-                body: encrypt(JSON.stringify({
+                body: ntru.encrypt(JSON.stringify({
                     to: recipient,
                     content: text
                 }))

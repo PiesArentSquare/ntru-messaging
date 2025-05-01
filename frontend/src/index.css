@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import "tailwindcss";
+
+*, *::before, *::after {
+    font-family: "Funnel Sans", sans-serif;
+}
+
+@layer base {
+    :root {
+        --text-50: #f2e5ff;
+        --text-100: #e5ccff;
+        --text-200: #cc99ff;
+        --text-300: #b266ff;
+        --text-400: #9933ff;
+        --text-500: #7f00ff;
+        --text-600: #6600cc;
+        --text-700: #4c0099;
+        --text-800: #330066;
+        --text-900: #190033;
+        --text-950: #0d001a;
+        
+        --background-10: #f7f0ff;
+        --background-50: #f1e5ff;
+        --background-100: #e4ccff;
+        --background-200: #c999ff;
+        --background-300: #ad66ff;
+        --background-400: #9233ff;
+        --background-500: #7700ff;
+        --background-600: #5f00cc;
+        --background-700: #470099;
+        --background-800: #300066;
+        --background-900: #180033;
+        --background-950: #0c001a;
+        
+        --primary-50: #efe6ff;
+        --primary-100: #e0cdfe;
+        --primary-200: #c09bfd;
+        --primary-300: #a168fd;
+        --primary-400: #8236fc;
+        --primary-500: #6304fb;
+        --primary-600: #4f03c9;
+        --primary-700: #3b0297;
+        --primary-800: #270264;
+        --primary-900: #140132;
+        --primary-950: #0a0019;
+        
+        --secondary-50: #ffe6e9;
+        --secondary-100: #fecdd3;
+        --secondary-200: #fd9ba8;
+        --secondary-300: #fd687c;
+        --secondary-400: #fc3650;
+        --secondary-500: #fb0425;
+        --secondary-600: #c9031d;
+        --secondary-700: #970216;
+        --secondary-800: #64020f;
+        --secondary-900: #320107;
+        --secondary-950: #190004;
+        
+        --accent-50: #ffece6;
+        --accent-100: #fed8cd;
+        --accent-200: #fdb29b;
+        --accent-300: #fd8b68;
+        --accent-400: #fc6436;
+        --accent-500: #fb3e04;
+        --accent-600: #c93103;
+        --accent-700: #972502;
+        --accent-800: #641902;
+        --accent-900: #320c01;
+        --accent-950: #190600;
+
+        @variant dark {
+            --text-50: #0d001a;
+            --text-100: #190033;
+            --text-200: #330066;
+            --text-300: #4c0099;
+            --text-400: #6600cc;
+            --text-500: #7f00ff;
+            --text-600: #9933ff;
+            --text-700: #b266ff;
+            --text-800: #cc99ff;
+            --text-900: #e5ccff;
+            --text-950: #f2e5ff;
+            
+            --background-10: #07000f;
+            --background-50: #0c001a;
+            --background-100: #180033;
+            --background-200: #300066;
+            --background-300: #470099;
+            --background-400: #5f00cc;
+            --background-500: #7700ff;
+            --background-600: #9233ff;
+            --background-700: #ad66ff;
+            --background-800: #c999ff;
+            --background-900: #e4ccff;
+            --background-950: #f1e5ff;
+            
+            --primary-50: #0a0019;
+            --primary-100: #140132;
+            --primary-200: #270264;
+            --primary-300: #3b0297;
+            --primary-400: #4f03c9;
+            --primary-500: #6304fb;
+            --primary-600: #8236fc;
+            --primary-700: #a168fd;
+            --primary-800: #c09bfd;
+            --primary-900: #e0cdfe;
+            --primary-950: #efe6ff;
+            
+            --secondary-50: #190004;
+            --secondary-100: #320107;
+            --secondary-200: #64020f;
+            --secondary-300: #970216;
+            --secondary-400: #c9031d;
+            --secondary-500: #fb0425;
+            --secondary-600: #fc3650;
+            --secondary-700: #fd687c;
+            --secondary-800: #fd9ba8;
+            --secondary-900: #fecdd3;
+            --secondary-950: #ffe6e9;
+            
+            --accent-50: #190600;
+            --accent-100: #320c01;
+            --accent-200: #641902;
+            --accent-300: #972502;
+            --accent-400: #c93103;
+            --accent-500: #fb3e04;
+            --accent-600: #fc6436;
+            --accent-700: #fd8b68;
+            --accent-800: #fdb29b;
+            --accent-900: #fed8cd;
+            --accent-950: #ffece6;
+        }
+    }
+}
+
+@theme {
+    --color-brand-text-50: var(--text-50);
+    --color-brand-text-100: var(--text-100);
+    --color-brand-text-200: var(--text-200);
+    --color-brand-text-300: var(--text-300);
+    --color-brand-text-400: var(--text-400);
+    --color-brand-text-500: var(--text-500);
+    --color-brand-text-600: var(--text-600);
+    --color-brand-text-700: var(--text-700);
+    --color-brand-text-800: var(--text-800);
+    --color-brand-text-900: var(--text-900);
+    --color-brand-text-950: var(--text-950);
+
+    --color-brand-background-10: var(--background-10);
+    --color-brand-background-50: var(--background-50);
+    --color-brand-background-100: var(--background-100);
+    --color-brand-background-200: var(--background-200);
+    --color-brand-background-300: var(--background-300);
+    --color-brand-background-400: var(--background-400);
+    --color-brand-background-500: var(--background-500);
+    --color-brand-background-600: var(--background-600);
+    --color-brand-background-700: var(--background-700);
+    --color-brand-background-800: var(--background-800);
+    --color-brand-background-900: var(--background-900);
+    --color-brand-background-950: var(--background-950);
+
+    --color-brand-primary-50: var(--primary-50);
+    --color-brand-primary-100: var(--primary-100);
+    --color-brand-primary-200: var(--primary-200);
+    --color-brand-primary-300: var(--primary-300);
+    --color-brand-primary-400: var(--primary-400);
+    --color-brand-primary-500: var(--primary-500);
+    --color-brand-primary-600: var(--primary-600);
+    --color-brand-primary-700: var(--primary-700);
+    --color-brand-primary-800: var(--primary-800);
+    --color-brand-primary-900: var(--primary-900);
+    --color-brand-primary-950: var(--primary-950);
+
+    --color-brand-secondary-50: var(--secondary-50);
+    --color-brand-secondary-100: var(--secondary-100);
+    --color-brand-secondary-200: var(--secondary-200);
+    --color-brand-secondary-300: var(--secondary-300);
+    --color-brand-secondary-400: var(--secondary-400);
+    --color-brand-secondary-500: var(--secondary-500);
+    --color-brand-secondary-600: var(--secondary-600);
+    --color-brand-secondary-700: var(--secondary-700);
+    --color-brand-secondary-800: var(--secondary-800);
+    --color-brand-secondary-900: var(--secondary-900);
+    --color-brand-secondary-950: var(--secondary-950);
+
+    --color-brand-accent-50: var(--accent-50);
+    --color-brand-accent-100: var(--accent-100);
+    --color-brand-accent-200: var(--accent-200);
+    --color-brand-accent-300: var(--accent-300);
+    --color-brand-accent-400: var(--accent-400);
+    --color-brand-accent-500: var(--accent-500);
+    --color-brand-accent-600: var(--accent-600);
+    --color-brand-accent-700: var(--accent-700);
+    --color-brand-accent-800: var(--accent-800);
+    --color-brand-accent-900: var(--accent-900);
+    --color-brand-accent-950: var(--accent-950);
+}

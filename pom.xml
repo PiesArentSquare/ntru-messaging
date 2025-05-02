@@ -8,17 +8,46 @@
     <artifactId>project2</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <modules>
-        <module>ntru</module>
-        <module>backend</module>
-        <module>webassembly</module>
-    </modules>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>backend</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+            <modules>
+                <module>ntru</module>
+                <module>backend</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>frontend</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+            <modules>
+                <module>ntru</module>
+                <module>webassembly</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>full</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>backend</module>
+                <module>ntru</module>
+                <module>webassembly</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

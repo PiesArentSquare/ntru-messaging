@@ -73,38 +73,37 @@
                             <mainClass>Module</mainClass>
                             <targetDirectory>${project.build.directory}/ntru</targetDirectory>
                             <targetFileName>ntru.js</targetFileName>
-<!--                            <optimizationLevel>ADVANCED</optimizationLevel>-->
                             <jsModuleType>ES2015</jsModuleType>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
             <!-- Copy output js after  -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-js-to-frontend</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.parent.basedir}/frontend/src/util</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.build.directory}/ntru</directory>
-                                    <includes>
-                                        <include>ntru.js</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-resources-plugin</artifactId>-->
+<!--                <version>3.3.1</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>copy-js-to-frontend</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>copy-resources</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <outputDirectory>${project.parent.basedir}/frontend/src/util</outputDirectory>-->
+<!--                            <resources>-->
+<!--                                <resource>-->
+<!--                                    <directory>${project.build.directory}/ntru</directory>-->
+<!--                                    <includes>-->
+<!--                                        <include>ntru.js</include>-->
+<!--                                    </includes>-->
+<!--                                </resource>-->
+<!--                            </resources>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 

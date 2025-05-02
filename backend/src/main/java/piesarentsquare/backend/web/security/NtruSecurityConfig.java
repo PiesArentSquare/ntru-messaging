@@ -25,7 +25,6 @@ public class NtruSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager, EncryptionManager encryptionManager) throws Exception {
         http
-                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 ).authorizeHttpRequests(auth -> auth
@@ -42,19 +41,19 @@ public class NtruSecurityConfig {
         return config.getAuthenticationManager();
     }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(@NonNull CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
-                        .allowedHeaders("Authorization", "Content-Type", "X-XSRF-TOKEN")
-                        .allowCredentials(true);
-            }
-        };
-    }
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(@NonNull CorsRegistry registry) {
+//                registry.addMapping("/**")
+//                        .allowedOrigins("*")
+//                        .allowedMethods("*")
+//                        .allowedHeaders("Authorization", "Content-Type", "X-XSRF-TOKEN")
+//                        .allowCredentials(true);
+//            }
+//        };
+//    }
 
     @Bean
     public UserDetailsService userDetailsService() {

@@ -20,7 +20,7 @@ export default () => {
 
     useEffect(() => {
         const ntru = new NTRU()
-        const wsPath = 'ws://localhost:8080/ws'
+        const wsPath = `ws://${window.location.host}/api/ws`
         const client = new Client({
             brokerURL: wsPath,
             onConnect: () => {

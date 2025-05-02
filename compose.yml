@@ -1,0 +1,18 @@
+services:
+  backend:
+    image: ntru-backend
+    build:
+      context: .
+      dockerfile: ./Dockerfile.backend
+    expose:
+      - 8080
+
+  frontend:
+    image: ntru-frontend
+    build:
+      context: .
+      dockerfile: ./Dockerfile.frontend
+    ports:
+      - 80:80
+    depends_on:
+      - backend

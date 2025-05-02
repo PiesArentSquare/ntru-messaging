@@ -12,7 +12,7 @@ const AuthContext = createContext<AuthContextReturn>({
     login: async _ => false,
     logout: async () => {},
 })
-const authURL      = 'http://localhost:8080'
+const authURL      = '/api'
 const handshakeURL = authURL + '/handshake'
 const loginURL     = authURL + '/login'
 const logoutURL    = authURL + '/logout'

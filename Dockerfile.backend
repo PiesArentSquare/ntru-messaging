@@ -1,0 +1,20 @@
+FROM maven:3.9.9-eclipse-temurin-17 AS dependencies
+WORKDIR /app
+COPY backend/pom.xml backend/pom.xml
+COPY ntru/pom.xml ntru/pom.xml
+COPY pom.xml .
+RUN mvn -B -e org.apache.maven.plugins:maven-dependency-plugin:3.7.0:go-offline -DexcludeArtifactIds=ntru -P backend
+
+FROM maven:3.9.9-eclipse-temurin-17 AS build
+WORKDIR /app
+COPY --from=dependencies /root/.m2 /root/.m2
+COPY --from=dependencies /app /app
+COPY ntru/src ./ntru/src
+COPY backend/src ./backend/src
+RUN mvn -B -e clean install -P backend
+
+FROM openjdk:17-jdk-alpine
+WORKDIR /app
+COPY --from=build /app/backend/target/*.jar /backend.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/backend.jar"]

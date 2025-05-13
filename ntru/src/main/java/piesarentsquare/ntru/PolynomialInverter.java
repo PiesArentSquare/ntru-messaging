@@ -28,7 +28,6 @@ class PrimeInverter {
         int pk, pkPlus1 = pk = z.modulus;
         Polynomial one = Polynomial.one(N);
         // lift from mod p^k to mod p^k+1 using hensel's lemma
-        // I have no idea what's happening here and don't yet have the time to find out, so this is adapted from chatgpt
         for (int i = 1; i < exponent; i++) {
             pkPlus1 *= z.modulus;
             Integers m = new Integers(pkPlus1);
